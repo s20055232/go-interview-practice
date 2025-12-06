@@ -130,11 +130,11 @@ func (us *UserService) GetUserAttempts(username string, challenges models.Challe
 func (us *UserService) calculateScore(username string, challengeID int) int {
 	// Read the scoreboard file for this challenge
 	scoreboardPath := filepath.Join("..", fmt.Sprintf("challenge-%d", challengeID), "SCOREBOARD.md")
-	content, err := ioutil.ReadFile(scoreboardPath)
+	content, err := os.ReadFile(scoreboardPath)
 	if err != nil {
 		// Try alternative path
 		scoreboardPath = filepath.Join(fmt.Sprintf("challenge-%d", challengeID), "SCOREBOARD.md")
-		content, err = ioutil.ReadFile(scoreboardPath)
+		content, err = os.ReadFile(scoreboardPath)
 		if err != nil {
 			// No scoreboard file, return default score
 			return 50

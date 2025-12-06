@@ -2,13 +2,13 @@ package services
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
 
+	"os"
 	"web-ui/internal/models"
 )
 
@@ -62,7 +62,7 @@ func (cs *ChallengeService) LoadChallenges() error {
 func (cs *ChallengeService) loadSingleChallenge(id int, dir string) (*models.Challenge, error) {
 	// Read README.md for title and description
 	readmePath := filepath.Join(dir, "README.md")
-	readmeContent, err := ioutil.ReadFile(readmePath)
+	readmeContent, err := os.ReadFile(readmePath)
 	if err != nil {
 		return nil, fmt.Errorf("could not read README: %v", err)
 	}
@@ -75,14 +75,14 @@ func (cs *ChallengeService) loadSingleChallenge(id int, dir string) (*models.Cha
 
 	// Read solution template
 	templatePath := filepath.Join(dir, "solution-template.go")
-	templateContent, err := ioutil.ReadFile(templatePath)
+	templateContent, err := os.ReadFile(templatePath)
 	if err != nil {
 		return nil, fmt.Errorf("could not read solution template: %v", err)
 	}
 
 	// Read test file
 	testPath := filepath.Join(dir, "solution-template_test.go")
-	testContent, err := ioutil.ReadFile(testPath)
+	testContent, err := os.ReadFile(testPath)
 	if err != nil {
 		log.Printf("Warning: Could not read test file for challenge %d: %v", id, err)
 	}
@@ -90,14 +90,14 @@ func (cs *ChallengeService) loadSingleChallenge(id int, dir string) (*models.Cha
 	// Read learning materials if available
 	learningPath := filepath.Join(dir, "learning.md")
 	learningContent := []byte("*No learning materials available for this challenge yet.*")
-	if learningFileContent, err := ioutil.ReadFile(learningPath); err == nil {
+	if learningFileContent, err := os.ReadFile(learningPath); err == nil {
 		learningContent = learningFileContent
 	}
 
 	// Read hints if available
 	hintsPath := filepath.Join(dir, "hints.md")
 	hintsContent := []byte("*No hints available for this challenge yet.*")
-	if hintsFileContent, err := ioutil.ReadFile(hintsPath); err == nil {
+	if hintsFileContent, err := os.ReadFile(hintsPath); err == nil {
 		hintsContent = hintsFileContent
 	}
 

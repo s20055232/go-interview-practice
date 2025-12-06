@@ -2,7 +2,6 @@ package services
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -32,7 +31,7 @@ func (es *ExecutionService) RunCode(code string, challenge *models.Challenge) Ex
 	start := time.Now()
 
 	// Create temporary directory for execution
-	tempDir, err := ioutil.TempDir("", "challenge-exec")
+	tempDir, err := os.MkdirTemp("", "challenge-exec")
 	if err != nil {
 		return ExecutionResult{
 			Passed: false,
@@ -43,7 +42,7 @@ func (es *ExecutionService) RunCode(code string, challenge *models.Challenge) Ex
 
 	// Write the submitted code to temporary file
 	codePath := filepath.Join(tempDir, "solution-template.go")
-	err = ioutil.WriteFile(codePath, []byte(code), 0644)
+	err = os.WriteFile(codePath, []byte(code), 0644)
 	if err != nil {
 		return ExecutionResult{
 			Passed: false,
@@ -53,7 +52,7 @@ func (es *ExecutionService) RunCode(code string, challenge *models.Challenge) Ex
 
 	// Write the test file to temporary directory
 	testPath := filepath.Join(tempDir, "solution_test.go")
-	err = ioutil.WriteFile(testPath, []byte(challenge.TestFile), 0644)
+	err = os.WriteFile(testPath, []byte(challenge.TestFile), 0644)
 	if err != nil {
 		return ExecutionResult{
 			Passed: false,
@@ -316,7 +315,7 @@ func (es *ExecutionService) SaveSubmissionToFilesystem(request SaveSubmissionReq
 		}
 
 		solutionFile := filepath.Join(dirPath, "solution-template.go")
-		err = ioutil.WriteFile(solutionFile, []byte(request.Code), 0644)
+		err = os.WriteFile(solutionFile, []byte(request.Code), 0644)
 		if err != nil {
 			continue
 		}
